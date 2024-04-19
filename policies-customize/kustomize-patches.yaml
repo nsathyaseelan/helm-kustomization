@@ -30,5 +30,5 @@ clusterPatches:
 #   kustomizePatch: ./k8s-passport-dev-01/
 - target:
      kind: Cluster
-     name: ndp-test
+     name: ndp-prod-1
   kustomizePatch: ./k8s-peo-stage-01/
