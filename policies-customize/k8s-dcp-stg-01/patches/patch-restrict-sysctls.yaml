@@ -1,0 +1,40 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: restrict-sysctls
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: check-sysctls
+      match:
+        any:
+        - resources:
+            kinds:
+            - Pod
+      exclude:
+        any:
+        - resources:
+            namespaces:
+            - istio-system
+            - kube-system
+            - fluent-bit
+            - kube-public
+            - kube-system
+            - keda
+            - kyverno
+            - nirmata
+            - prometheus
+            - velero
+            - twistlock
+      validate:
+        pattern:
+          spec:
+            =(securityContext):
+              =(sysctls):
+              - =(name): "kernel.shm_rmid_forced | net.ipv4.ip_local_port_range | net.ipv4.ip_unprivileged_port_start\
+                  \ | net.ipv4.tcp_syncookies | net.ipv4.ping_group_range"
+        message: "Setting additional sysctls above the allowed type is disallowed. The\
+          \ field spec.securityContext.sysctls must be unset or not use any other names\
+          \ than kernel.shm_rmid_forced, net.ipv4.ip_local_port_range, net.ipv4.ip_unprivileged_port_start,\
+          \ net.ipv4.tcp_syncookies and net.ipv4.ping_group_range."
+

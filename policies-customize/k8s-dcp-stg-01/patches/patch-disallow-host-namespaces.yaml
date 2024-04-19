@@ -1,0 +1,38 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-host-namespaces
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: host-namespaces
+      match:
+        any:
+        - resources:
+            kinds:
+            - Pod
+      exclude:
+        any:
+        - resources:
+            namespaces:
+            - istio-system
+            - prometheus
+            - kube-system
+            - fluent-bit
+            - kube-public
+            - kube-system
+            - keda
+            - kyverno
+            - nirmata
+            - velero
+            - twistlock
+            - amazon-cloudwatch
+      validate:
+        pattern:
+          spec:
+            =(hostIPC): "false"
+            =(hostPID): "false"
+            =(hostNetwork): "false"
+        message: "Sharing the host namespaces is disallowed. The fields spec.hostNetwork,\
+          \ spec.hostIPC, and spec.hostPID must be unset or set to `false`."
+

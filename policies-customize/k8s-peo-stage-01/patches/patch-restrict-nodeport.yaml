@@ -1,0 +1,33 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: restrict-nodeport
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: validate-nodeport
+      match:
+        any:
+        - resources:
+            kinds:
+            - Pod
+      exclude:
+        any:
+        - resources:
+            namespaces:
+            - kube-system
+            - fluent-bit
+            - kube-public
+            - kube-system
+            - keda
+            - kyverno
+            - nirmata
+            - prometheus-op
+            - velero
+            - twistlock
+            - amazon-cloudwatch
+      validate:
+        message: "Services of type NodePort are not allowed."
+        pattern:
+          spec:
+            =(type): "!NodePort"

@@ -1,0 +1,51 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-capabilities
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: adding-capabilities
+      match:
+        any:
+        - resources:
+            kinds:
+              - Pod
+      exclude:
+        any:
+        - resources:
+            namespaces:
+            - kube-system
+            - fluent-bit
+            - kube-public
+            - kube-system
+            - keda
+            - kyverno
+            - nirmata
+            - prometheus-op
+            - velero
+            - twistlock
+      validate:
+        message: >-
+          Any capabilities added beyond the allowed list (AUDIT_WRITE, CHOWN, DAC_OVERRIDE, FOWNER,
+          FSETID, KILL, MKNOD, NET_BIND_SERVICE, SETFCAP, SETGID, SETPCAP, SETUID, SYS_CHROOT)
+          are disallowed for this cluster.
+        deny:
+          conditions:
+            all:
+            - key: "{{ request.object.spec.[ephemeralContainers, initContainers, containers][].securityContext.capabilities.add[] }}"
+              operator: AnyNotIn
+              value:
+              - AUDIT_WRITE
+              - CHOWN
+              - DAC_OVERRIDE
+              - FOWNER
+              - FSETID
+              - KILL
+              - MKNOD
+              - NET_BIND_SERVICE
+              - SETFCAP
+              - SETGID
+              - SETPCAP
+              - SETUID
+              - SYS_CHROOT

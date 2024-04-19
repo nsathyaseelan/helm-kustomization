@@ -1,0 +1,42 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-host-path
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: host-path
+      match:
+        any:
+        - resources:
+            kinds:
+            - Pod
+      exclude:
+        any:
+        - resources:
+            namespaces:
+            - istio-system
+            - kube-system
+            - fluent-bit
+            - kube-public
+            - kube-system
+            - keda
+            - kyverno
+            - nirmata
+            - prometheus
+            - velero
+            - twistlock
+            - amazon-cloudwatch
+        - resources:
+            kinds:
+            - DaemonSet
+            selector:
+              matchLabels:
+                app: cloudwatch-agent
+      validate:
+        message: >-
+          HostPath volumes are forbidden. The field spec.volumes[*].hostPath must be unset.
+        pattern:
+          spec:
+            =(volumes):
+              - X(hostPath): "null"

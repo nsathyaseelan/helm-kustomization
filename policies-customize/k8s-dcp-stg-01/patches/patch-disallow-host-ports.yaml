@@ -1,0 +1,45 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-host-ports
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: host-ports-none
+      match:
+        any:
+        - resources:
+            kinds:
+            - Pod
+      exclude:
+        any:
+        - resources:
+            namespaces:
+            - istio-system
+            - prometheus
+            - kube-system
+            - fluent-bit
+            - kube-public
+            - kube-system
+            - keda
+            - kyverno
+            - nirmata
+            - velero
+            - twistlock
+            - amazon-cloudwatch
+      validate:
+        pattern:
+          spec:
+            =(ephemeralContainers):
+            - =(ports):
+              - =(hostPort): 0
+            =(initContainers):
+            - =(ports):
+              - =(hostPort): 0
+            containers:
+            - =(ports):
+              - =(hostPort): 0
+        message: "Use of host ports is disallowed. The fields spec.containers[*].ports[*].hostPort\
+          \ , spec.initContainers[*].ports[*].hostPort, and spec.ephemeralContainers[*].ports[*].hostPort\
+          \ must either be unset or set to `0`."
+

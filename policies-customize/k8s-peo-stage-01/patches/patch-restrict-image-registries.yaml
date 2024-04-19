@@ -1,0 +1,37 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: restrict-image-registries
+spec:
+  validationFailureAction: Audit
+  rules:
+    - name: validate-corp-registries
+      match:
+        any:
+        - resources:
+            kinds:
+              - Pod 
+      exclude:
+        any:
+        - resources:
+            namespaces:
+            - kube-system
+            - nirmata
+            - kyverno
+            - keda
+            - prometheus-op
+            - velero
+            - amazon-cloudwatch
+            kinds:
+              - Deployment
+              - Pod                                
+      validate:
+        message: "Unknown image registry."
+        pattern:
+          spec:
+            =(ephemeralContainers):
+            - image: "artifactory.trinet-devops.com:443/* | *.amazonaws.com/* |  *.gcr.io/* | *.ghcr.io/* | public.ecr.aws/* | quay.io/* |registry.k8s.io/* | registry-auth.twistlock.com/* | container-registry.oracle.com/* | *.ocir.io/* " 
+            =(initContainers):
+            - image: "artifactory.trinet-devops.com:443/* | *.amazonaws.com/* |  *.gcr.io/* | *.ghcr.io/* | public.ecr.aws/* |quay.io/* |registry.k8s.io/* | registry-auth.twistlock.com/* | container-registry.oracle.com/* | *.ocir.io/* " 
+            containers:
+            - image: "artifactory.trinet-devops.com:443/* | *.amazonaws.com/* |  *.gcr.io/* | *.ghcr.io/* | public.ecr.aws/* |quay.io/* |registry.k8s.io/*| registry-auth.twistlock.com/* | container-registry.oracle.com/* | *.ocir.io/* " 

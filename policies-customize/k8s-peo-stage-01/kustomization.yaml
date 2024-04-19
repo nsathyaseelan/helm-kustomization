@@ -1,0 +1,21 @@
+resources:
+- ../base/
+
+patchesStrategicMerge:
+- patches/patch-disallow-capabilities.yaml
+- patches/patch-disallow-host-path.yaml
+- patches/patch-disallow-latest-tag.yaml
+- patches/patch-restrict-sysctls.yaml
+- patches/patch-disallow-host-namespaces.yaml
+- patches/patch-disallow-host-ports.yaml
+- patches/patch-disallow-privileged-containers.yaml
+- patches/patch-disallow-privilege-escalation.yaml
+- patches/patch-drop-all-capabilities.yaml
+- patches/patch-require-run-as-non-root-user.yaml
+- patches/patch-disallow-custom-snippets.yaml
+- patches/patch-restrict-nodeport.yaml
+- patches/patch-restrict-image-registries.yaml
+
+
+
+

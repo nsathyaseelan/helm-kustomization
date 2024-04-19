@@ -1,0 +1,37 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: drop-all-capabilities
+spec:
+  validationFailureAction: audit
+  rules:
+    - name: require-drop-all
+      match:
+        any:
+        - resources:
+            kinds:
+            - Pod
+      exclude:
+        any:
+        - resources:
+            namespaces:
+            - kube-system
+            - fluent-bit
+            - kube-public
+            - kube-system
+            - keda
+            - kyverno
+            - nirmata
+            - prometheus-op
+            - velero
+            - twistlock
+      validate:
+        foreach:
+        - deny:
+            conditions:
+              all:
+              - value: "{{ element.securityContext.capabilities.drop || '' }}"
+                key: "ALL"
+                operator: "AnyNotIn"
+          list: "request.object.spec.[ephemeralContainers, initContainers, containers][]"
+        message: "Containers must drop `ALL` capabilities."
