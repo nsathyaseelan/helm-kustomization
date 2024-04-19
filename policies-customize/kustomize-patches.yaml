@@ -3,32 +3,32 @@ clusterPatches:
      kind: Cluster
      labelSelector:
          cluster-name: "cluster-001"
-  kustomizePatch: ./cluster-001/
-- target:
-     kind: Cluster
-     name: k8s-dcp-stg-01
   kustomizePatch: ./k8s-dcp-stg-01/
+# - target:
+#      kind: Cluster
+#      name: k8s-dcp-stg-01
+#   kustomizePatch: ./k8s-dcp-stg-01/
+# - target:
+#      kind: Cluster
+#      name: k8s-infrastructure-prod-01
+#   kustomizePatch: ./k8s-infrastructure-prod-01/
+# - target:
+#      kind: Cluster
+#      name: k8s-customerplatform-dev-01
+#   kustomizePatch: ./k8s-customerplatform-dev-01/
+# - target:
+#      kind: Cluster
+#      name: k8s-peo-qe-01
+#   kustomizePatch: ./k8s-peo-qe-01/
+# - target:
+#      kind: Cluster
+#      name: k8s-peo-stage-02
+#   kustomizePatch: ./k8s-peo-stage-02/
+# - target:
+#      kind: Cluster
+#      name: k8s-passport-dev-01
+#   kustomizePatch: ./k8s-passport-dev-01/
 - target:
      kind: Cluster
-     name: k8s-infrastructure-prod-01
-  kustomizePatch: ./k8s-infrastructure-prod-01/
-- target:
-     kind: Cluster
-     name: k8s-customerplatform-dev-01
-  kustomizePatch: ./k8s-customerplatform-dev-01/
-- target:
-     kind: Cluster
-     name: k8s-peo-qe-01
-  kustomizePatch: ./k8s-peo-qe-01/
-- target:
-     kind: Cluster
-     name: k8s-peo-stage-02
-  kustomizePatch: ./k8s-peo-stage-02/
-- target:
-     kind: Cluster
-     name: k8s-passport-dev-01
-  kustomizePatch: ./k8s-passport-dev-01/
-- target:
-     kind: Cluster
-     name: k8s-peo-stage-01
+     name: ndp-test
   kustomizePatch: ./k8s-peo-stage-01/
